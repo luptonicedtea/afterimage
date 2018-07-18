@@ -81,7 +81,18 @@ if "%modelnum%" == "EliteBook745 G3  " echo We found your model number! Press an
 if "%modelnum%" == "EliteBook745 G4  " echo We found your model number! Press any key to begin BIOS update. & goto 745g4
 if "%modelnum%" == "EliteBook755 G3  " echo We found your model number! Press any key to begin BIOS update. & goto 745g3
 if "%modelnum%" == "EliteBook755 G4  " echo We found your model number! Press any key to begin BIOS update. & goto 745g4
-if "%modelnum%" == "ProBook6475b  " echo We found your model number! Press any key to begin BIOS update. & goto 6475b
+if "%modelnum%" == "ProBook6475b  " (
+    for /f "delims=: tokens=1*" %%A in ('systeminfo') do (
+  for /f "tokens=*" %%S in ("%%B") do (
+    if "%%A"=="BIOS Version" set "fullbios=%%S"
+  )
+)
+ECHO.%fullbios%| FIND /I "68TTU">Nul && ( 
+  goto 6475b68RTU
+) || (
+  goto 6475b68TTU
+)
+)
 
 echo Your machine model doesn't match anything on record. Please manually upgrade your BIOS. Thanks!
 pause
@@ -91,11 +102,21 @@ exit
 :: you have to change the file path three times, copy the extracted files to the new path, and update the %biosver% that you want it to look for by checking
 :: the tokens.
 
-:6475b
+:6475b68TTU
+FOR /F "tokens=1" %%a in ('^"\\CBRCFS\Staff_Share$\Client Services\Software\Scripts\afterimage\non_cte\wmicbios.bat^"') do SET biosver=%%a
 echo Your bios version is %biosver%. It should be F.69.
 if "%biosver%"== "F.69" echo Your machine BIOS (%biosver%) is already up to date. & pause & exit
 xcopy /E "\\CBRCFS\STAFF_SHARE$\Client Services\Software\Drivers\Machine Drivers\BIOS Updates\HP\Current\HP Probook 6475b\SP86984" C:\SWSetup\sp86984\
-C:\SWSetup\sp86984\hpqFlash64.exe
+C:\SWSetup\sp86984\HpqFlash\sp86984_T.exe
+pause
+exit
+
+:6475b68RTU
+FOR /F "tokens=1" %%a in ('^"\\CBRCFS\Staff_Share$\Client Services\Software\Scripts\afterimage\non_cte\wmicbios.bat^"') do SET biosver=%%a
+echo Your bios version is %biosver%. It should be F.69.
+if "%biosver%"== "F.69" echo Your machine BIOS (%biosver%) is already up to date. & pause & exit
+xcopy /E "\\CBRCFS\STAFF_SHARE$\Client Services\Software\Drivers\Machine Drivers\BIOS Updates\HP\Current\HP Probook 6475b\SP86984" C:\SWSetup\sp86984\
+C:\SWSetup\sp86984\HpqFlash\sp86984_R.exe
 pause
 exit
 
