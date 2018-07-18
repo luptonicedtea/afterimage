@@ -48,9 +48,12 @@ if "%modelnum%" == "CompaqPro 6305 SFF  " FOR /F "tokens=2" %%a in ('^"\\CBRCFS\
 if "%modelnum%" == "ProBook645 G1  " FOR /F "tokens=2*" %%a in ('^"\\CBRCFS\Staff_Share$\Client Services\Software\Scripts\afterimage\cte\wmicbios.bat^"') do SET biosver=%%a%%b
 if "%modelnum%" == "EliteBook745 G3  " FOR /F "tokens=3" %%a in ('^"\\CBRCFS\Staff_Share$\Client Services\Software\Scripts\afterimage\cte\wmicbios.bat^"') do SET biosver=%%a
 if "%modelnum%" == "EliteBook745 G4  " FOR /F "tokens=3" %%a in ('^"\\CBRCFS\Staff_Share$\Client Services\Software\Scripts\afterimage\cte\wmicbios.bat^"') do SET biosver=%%a
+if "%modelnum%" == "EliteBook755 G3  " FOR /F "tokens=3" %%a in ('^"\\CBRCFS\Staff_Share$\Client Services\Software\Scripts\afterimage\non_cte\wmicbios.bat^"') do SET biosver=%%a
+if "%modelnum%" == "EliteBook755 G4  " FOR /F "tokens=3" %%a in ('^"\\CBRCFS\Staff_Share$\Client Services\Software\Scripts\afterimage\non_cte\wmicbios.bat^"') do SET biosver=%%a
 if "%modelnum%" == "EliteDesk705 G2 MT  " FOR /F "tokens=3" %%a in ('^"\\CBRCFS\Staff_Share$\Client Services\Software\Scripts\afterimage\cte\wmicbios.bat^"') do SET biosver=%%a
 if "%modelnum%" == "EliteDesk705 G3 MT  " FOR /F "tokens=3" %%a in ('^"\\CBRCFS\Staff_Share$\Client Services\Software\Scripts\afterimage\non_cte\wmicbios.bat^"') do SET biosver=%%a
 if "%modelnum%" == "EliteDesk705 G3 SFF  " FOR /F "tokens=3" %%a in ('^"\\CBRCFS\Staff_Share$\Client Services\Software\Scripts\afterimage\non_cte\wmicbios.bat^"') do SET biosver=%%a
+if "%modelnum%" == "ProBook6475b  " FOR /F "tokens=3" %%a in ('^"\\CBRCFS\Staff_Share$\Client Services\Software\Scripts\afterimage\non_cte\wmicbios.bat^"') do SET biosver=%%a
 
 :: Close edge if running
 taskkill /F /IM MicrosoftEdge.exe
@@ -64,27 +67,26 @@ echo Install Certiport is %installcertiport%
 if "%installcertiport%"=="yes" (
 	if exist "C:\Users\Public\Desktop\Console 8.lnk" (
 		goto wordsearch
-	) else if "%installcertiport%"=="no" (
-	goto wordsearch
+		) else if "%installcertiport%"=="no" (
+			goto wordsearch
+		)
 	)
-)
 
 set /p config= Is this an autodesk machine? Y/N:
 
 :: Experimenting with checking office activation
 :wordsearch
 :: The below directory is for users with a 64-bit operating system using 64-bit Office 
-:: taskkill /f /im  OneDriveSetup.exe
 cls
 set activated=" "
 for /f "tokens=3 delims= " %%a in ('cscript "%ProgramFiles%\Microsoft Office\Office16\OSPP.VBS" /dstatus ^| find /i "License Status:"') do (
-set "licenseStatus=%%a"
-)
+	set "licenseStatus=%%a"
+	)
 
 if /i "%licenseStatus%"=="---LICENSED---" (
-        set activated="yes" & goto certiportcheck
-    ) Else (
-        set activated="no" & start winword.exe & goto wordnotactivated
+	set activated="yes" & goto certiportcheck
+    ) else (
+	set activated="no" & start winword.exe & goto wordnotactivated
     )
 
 :wordnotactivated
@@ -97,31 +99,27 @@ if %errorlevel% equ 0 (timeout /t 5 /NOBREAK && goto killword) else (goto wordno
 taskkill /F /IM winword.exe
 goto certiportcheck
 
-
 :certiportcheck
-if %installcertiport%==no goto cpyb2
-if exist "C:\Users\Public\Desktop\Console 8.lnk" goto cpyb2
+if %installcertiport%==no goto copyauto2
+if exist "C:\Users\Public\Desktop\Console 8.lnk" goto copyauto2
 if %installcertiport%==yes goto certiport
 
 :certiport
 if %config%==y set config=autodesk
 if %config%==n (
 	set config=microsoft
-) else (
+	) else (
 	echo That is not a valid input. Please try again with a Y or an N. && goto certiport
-)
+	)
 cls
 echo Installing Console 8...
 pushd \\CBRCFS\staff_share$\Client Services\Software\Client Services Software\CTE Software\Certiport
 "Console_Setup.exe" Path="C:\Certiport\console&lang=ENU&imode=Silent&iact=Install"
 copy /Y "\\CBRCFS\Staff_Share$\Client Services\Software\Scripts\afterimage\cte\certiport_configs\%location%\%config%\CTCConfig.enc" C:\Certiport\Console\Data\CTCConfig.enc
 popd
-goto cpyb2
+goto copyauto2
 
-:cpyb2
-:: Lock the Workstation.
-:: rundll32.exe user32.dll, LockWorkStation
-
+:copyauto2
 xcopy "\\CBRCFS\Staff_Share$\Client Services\Software\Scripts\afterimage\cte\CTE_afterimage_autoinstaller2.lnk" C:\Users\Public\Desktop\
 goto bios
 
@@ -138,7 +136,7 @@ if "%modelnum%" == "EliteDesk705 G2 MT  " echo We found your model number! Press
 if "%modelnum%" == "EliteDesk705 G3 MT  " echo We found your model number! Press any key to begin BIOS update. & goto 705g3
 if "%modelnum%" == "EliteDesk705 G3 SFF  " echo We found your model number! Press any key to begin BIOS update. & goto 705g3
 if "%modelnum%" == "Compaq6005 Pro MT PC  " echo We found your model number! Press any key to begin BIOS update. & goto 6005
-if "%modelnum%" == "CompaqPro 6305 SFF  " echo We found your model number! Press any key to begin BIOS update. & goto 6305sff
+if "%modelnum%" == "CompaqPro 6305 SFF  " echo We found your model number! Press any key to begin BIOS update. & goto 6305
 if "%modelnum%" == "CompaqPro 6305 MT  " echo We found your model number! Press any key to begin BIOS update. & goto 6305
 if "%modelnum%" == "ProBook645 G1  " echo We found your model number! Press any key to begin BIOS update. & goto 645g1
 if "%modelnum%" == "EliteBook745 G3  " echo We found your model number! Press any key to begin BIOS update. & goto 745g3
@@ -218,14 +216,6 @@ pause
 exit
 
 :6305
-echo Your bios version is %biosver%. It should be v02.77.
-if "%biosver%"=="v02.77" echo Your machine BIOS is already up to date. & pause && exit
-xcopy /E "\\CBRCFS\STAFF_SHARE$\Client Services\Software\Drivers\Machine Drivers\BIOS Updates\HP\Current\HP Compaq Pro 6305\sp87071" C:\SWSetup\sp87071\
-C:\SWSetup\sp87071\HPQFlash\HpqFlash.exe
-pause
-exit
-
-:6305sff
 echo Your bios version is %biosver%. It should be v02.77.
 if "%biosver%"=="v02.77" echo Your machine BIOS is already up to date. & pause && exit
 xcopy /E "\\CBRCFS\STAFF_SHARE$\Client Services\Software\Drivers\Machine Drivers\BIOS Updates\HP\Current\HP Compaq Pro 6305\sp87071" C:\SWSetup\sp87071\
