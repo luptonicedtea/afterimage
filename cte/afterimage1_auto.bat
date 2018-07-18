@@ -130,18 +130,32 @@ md C:\SWSetup
 
 :: Determine which machine it is
 echo %modelnum%
-if "%modelnum%" == "EliteDesk705 G1 SFF  " echo We found your model number! Press any key to begin BIOS update. & goto 705g1
 if "%modelnum%" == "EliteDesk705 G1 MT  " echo We found your model number! Press any key to begin BIOS update. & goto 705g1
+if "%modelnum%" == "EliteDesk705 G1 SFF  " echo We found your model number! Press any key to begin BIOS update. & goto 705g1
 if "%modelnum%" == "EliteDesk705 G2 MT  " echo We found your model number! Press any key to begin BIOS update. & goto 705g2
+if "%modelnum%" == "EliteDesk705 G2 SFF  " echo We found your model number! Press any key to begin BIOS update. & goto 705g2
 if "%modelnum%" == "EliteDesk705 G3 MT  " echo We found your model number! Press any key to begin BIOS update. & goto 705g3
 if "%modelnum%" == "EliteDesk705 G3 SFF  " echo We found your model number! Press any key to begin BIOS update. & goto 705g3
 if "%modelnum%" == "Compaq6005 Pro MT PC  " echo We found your model number! Press any key to begin BIOS update. & goto 6005
-if "%modelnum%" == "CompaqPro 6305 SFF  " echo We found your model number! Press any key to begin BIOS update. & goto 6305
 if "%modelnum%" == "CompaqPro 6305 MT  " echo We found your model number! Press any key to begin BIOS update. & goto 6305
+if "%modelnum%" == "CompaqPro 6305 SFF  " echo We found your model number! Press any key to begin BIOS update. & goto 6305
 if "%modelnum%" == "ProBook645 G1  " echo We found your model number! Press any key to begin BIOS update. & goto 645g1
 if "%modelnum%" == "EliteBook745 G3  " echo We found your model number! Press any key to begin BIOS update. & goto 745g3
 if "%modelnum%" == "EliteBook745 G4  " echo We found your model number! Press any key to begin BIOS update. & goto 745g4
-:: if "%modelnum%" == "**INSERT hp 6475B HERE**" echo We found your model number! Press any key to begin BIOS update. & goto 6475b
+if "%modelnum%" == "EliteBook755 G3  " echo We found your model number! Press any key to begin BIOS update. & goto 745g3
+if "%modelnum%" == "EliteBook755 G4  " echo We found your model number! Press any key to begin BIOS update. & goto 745g4
+if "%modelnum%" == "ProBook6475b  " (
+    for /f "delims=: tokens=1*" %%A in ('systeminfo') do (
+  for /f "tokens=*" %%S in ("%%B") do (
+    if "%%A"=="BIOS Version" set "fullbios=%%S"
+  )
+)
+ECHO.%fullbios%| FIND /I "68TTU">Nul && ( 
+  goto 6475b68RTU
+) || (
+  goto 6475b68TTU
+)
+)
 
 echo Your machine model doesn't match anything on record. Please manually upgrade your BIOS. Thanks!
 pause
@@ -150,6 +164,24 @@ exit
 :: Copy BIOS files and run installer based on %modelnum%, and determine whether they're up to date using %biosver%. If you want to add an updated bios installer,
 :: you have to change the file path three times, copy the extracted files to the new path, and update the %biosver% that you want it to look for by checking
 :: the tokens.
+
+:6475b68TTU
+FOR /F "tokens=1" %%a in ('^"\\CBRCFS\Staff_Share$\Client Services\Software\Scripts\afterimage\non_cte\wmicbios.bat^"') do SET biosver=%%a
+echo Your bios version is %biosver%. It should be F.69.
+if "%biosver%"== "F.69" echo Your machine BIOS (%biosver%) is already up to date. & pause & exit
+xcopy /E "\\CBRCFS\STAFF_SHARE$\Client Services\Software\Drivers\Machine Drivers\BIOS Updates\HP\Current\HP Probook 6475b\SP86984" C:\SWSetup\sp86984\
+C:\SWSetup\sp86984\HpqFlash\sp86984_T.exe
+pause
+exit
+
+:6475b68RTU
+FOR /F "tokens=1" %%a in ('^"\\CBRCFS\Staff_Share$\Client Services\Software\Scripts\afterimage\non_cte\wmicbios.bat^"') do SET biosver=%%a
+echo Your bios version is %biosver%. It should be F.69.
+if "%biosver%"== "F.69" echo Your machine BIOS (%biosver%) is already up to date. & pause & exit
+xcopy /E "\\CBRCFS\STAFF_SHARE$\Client Services\Software\Drivers\Machine Drivers\BIOS Updates\HP\Current\HP Probook 6475b\SP86984" C:\SWSetup\sp86984\
+C:\SWSetup\sp86984\HpqFlash\sp86984_R.exe
+pause
+exit
 
 :6475b
 echo Your bios version is %biosver%. It should be F.69.
