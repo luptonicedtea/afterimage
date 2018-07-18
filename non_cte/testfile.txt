@@ -1,0 +1,1 @@
+This file is a test at 7:42 AM on 7/18/18 to determine whether VS Code is uploading to Git.
