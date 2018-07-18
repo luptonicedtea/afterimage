@@ -4,13 +4,12 @@ set c8_config="%c8_directory%\Data\CTCConfig.enc"
 set c8_backuploc="%temp%\Certiport_Backup"
 
 :: echo Press any key to back up the current Console 8 Configuration and re-install:
-:: pause
 
 :: Grab the location, set as %location%. Only works for Middle and High School
 if "%computername:~0,3%" == "326" set location=laney
 if "%computername:~0,3%" == "327" set location=ashley
 if "%computername:~0,3%" == "340" set location=bear
-if "%computername:~0,3%" == "651" set location=hoggard
+if "%computername:~0,3%" == "342" set location=hoggard
 if "%computername:~0,3%" == "352" set location=newhanover
 if "%computername:~0,3%" == "354" set location=jcroe
 if "%computername:~0,3%" == "355" set location=mosley
@@ -24,8 +23,31 @@ if "%computername:~0,3%" == "351" set location=myrtlegrove
 if "%computername:~0,3%" == "364" set location=rolandgrise
 if "%computername:~0,3%" == "392" set location=williston
 if "%computername:~0,3%" == "409" set location=virgo
+set location=unknown
 
-goto mainmenu
+:: Check to see if Certiport is necessary
+if %location%==laney (
+	set installcertiport=yes
+	) else if %location%==ashley (
+	set installcertiport=yes
+	) else if %location%==bear (
+	set installcertiport=yes
+	) else if %location%==hoggard (
+	set installcertiport=yes
+	) else if %location%==newhanover (
+	set installcertiport=yes
+	) else if %location%==jcroe (
+	set installcertiport=yes
+	) else if %location%==mosley (
+	set installcertiport=yes
+	) else if %location%==wec (
+	set installcertiport=yes
+	) else if %location%==seatech (
+	set installcertiport=yes
+	) else if %location%==unknown (
+		echo %location% & set installcertiport=no && goto mainmenu 
+		)
+
 
 :mainmenu
 cls
@@ -74,7 +96,12 @@ pause && goto mainmenu
 :checkconfig
 :: Replaces config with school's correct configuration file (autodesk/microsoft)
 cls
-set /p configtype= Is this an autodesk machine? Y/N:
+
+if %installcertiport%==yes (
+	set /p configtype= Is this an autodesk machine? Y/N:
+	) else if %installcertiport%==no (
+		echo Your school does not have a valid config. Please choose another option. & pause && goto mainmenu
+	)
 if %configtype%==y set configtype=autodesk
 if %configtype%==n (
 	set configtype=microsoft
