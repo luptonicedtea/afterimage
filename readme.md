@@ -1,7 +1,7 @@
 # **Afterimage**
-## **NHCS Post-Image Finalization**
+### **NHCS Post-Image Finalization**
 
-### Function
+## Function
 The function of this .bat file is to speed up the process after a machine is freshly imaged from SCCM. 
 
 It does the following:
