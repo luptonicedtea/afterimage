@@ -40,20 +40,20 @@ if %location%==laney (
 	) else (set installcertiport=no)
 
 :: Grab the BIOS version and Model Number
-FOR /F "tokens=2" %%a in ('^"\\CBRCFS\Staff_Share$\Client Services\Software\Scripts\afterimage\cte\wmicbios.bat^"') do SET biosver=%%a
-FOR /F "tokens=2*" %%a in ('^"\\CBRCFS\Staff_Share$\Client Services\Software\Scripts\afterimage\cte\wmicmodel.bat^"') do SET modelnum=%%a%%b
+FOR /F "tokens=2" %%a in ('wmic bios get smbiosbiosversion') do SET biosver=%%a
+FOR /F "tokens=2*" %%a in ('wmic csproduct get name') do SET modelnum=%%a%%b
 
 :: Exceptions for the BIOS version (some machines output it funny)
-if "%modelnum%" == "CompaqPro 6305 SFF  " FOR /F "tokens=2" %%a in ('^"\\CBRCFS\Staff_Share$\Client Services\Software\Scripts\afterimage\cte\wmicbios.bat^"') do SET biosver=%%a
-if "%modelnum%" == "ProBook645 G1  " FOR /F "tokens=2*" %%a in ('^"\\CBRCFS\Staff_Share$\Client Services\Software\Scripts\afterimage\cte\wmicbios.bat^"') do SET biosver=%%a%%b
-if "%modelnum%" == "EliteBook745 G3  " FOR /F "tokens=3" %%a in ('^"\\CBRCFS\Staff_Share$\Client Services\Software\Scripts\afterimage\cte\wmicbios.bat^"') do SET biosver=%%a
-if "%modelnum%" == "EliteBook745 G4  " FOR /F "tokens=3" %%a in ('^"\\CBRCFS\Staff_Share$\Client Services\Software\Scripts\afterimage\cte\wmicbios.bat^"') do SET biosver=%%a
-if "%modelnum%" == "EliteBook755 G3  " FOR /F "tokens=3" %%a in ('^"\\CBRCFS\Staff_Share$\Client Services\Software\Scripts\afterimage\non_cte\wmicbios.bat^"') do SET biosver=%%a
-if "%modelnum%" == "EliteBook755 G4  " FOR /F "tokens=3" %%a in ('^"\\CBRCFS\Staff_Share$\Client Services\Software\Scripts\afterimage\non_cte\wmicbios.bat^"') do SET biosver=%%a
-if "%modelnum%" == "EliteDesk705 G2 MT  " FOR /F "tokens=3" %%a in ('^"\\CBRCFS\Staff_Share$\Client Services\Software\Scripts\afterimage\cte\wmicbios.bat^"') do SET biosver=%%a
-if "%modelnum%" == "EliteDesk705 G3 MT  " FOR /F "tokens=3" %%a in ('^"\\CBRCFS\Staff_Share$\Client Services\Software\Scripts\afterimage\non_cte\wmicbios.bat^"') do SET biosver=%%a
-if "%modelnum%" == "EliteDesk705 G3 SFF  " FOR /F "tokens=3" %%a in ('^"\\CBRCFS\Staff_Share$\Client Services\Software\Scripts\afterimage\non_cte\wmicbios.bat^"') do SET biosver=%%a
-if "%modelnum%" == "ProBook6475b  " FOR /F "tokens=3" %%a in ('^"\\CBRCFS\Staff_Share$\Client Services\Software\Scripts\afterimage\non_cte\wmicbios.bat^"') do SET biosver=%%a
+if "%modelnum%" == "CompaqPro 6305 SFF  " FOR /F "tokens=2" %%a in ('wmic bios get smbiosbiosversion') do SET biosver=%%a
+if "%modelnum%" == "ProBook645 G1  " FOR /F "tokens=2*" %%a in ('wmic bios get smbiosbiosversion') do SET biosver=%%a%%b
+if "%modelnum%" == "EliteBook745 G3  " FOR /F "tokens=3" %%a in ('wmic bios get smbiosbiosversion') do SET biosver=%%a
+if "%modelnum%" == "EliteBook745 G4  " FOR /F "tokens=3" %%a in ('wmic bios get smbiosbiosversion') do SET biosver=%%a
+if "%modelnum%" == "EliteBook755 G3  " FOR /F "tokens=3" %%a in ('wmic bios get smbiosbiosversion') do SET biosver=%%a
+if "%modelnum%" == "EliteBook755 G4  " FOR /F "tokens=3" %%a in ('wmic bios get smbiosbiosversion') do SET biosver=%%a
+if "%modelnum%" == "EliteDesk705 G2 MT  " FOR /F "tokens=3" %%a in ('wmic bios get smbiosbiosversion') do SET biosver=%%a
+if "%modelnum%" == "EliteDesk705 G3 MT  " FOR /F "tokens=3" %%a in ('wmic bios get smbiosbiosversion') do SET biosver=%%a
+if "%modelnum%" == "EliteDesk705 G3 SFF  " FOR /F "tokens=3" %%a in ('wmic bios get smbiosbiosversion') do SET biosver=%%a
+if "%modelnum%" == "ProBook6475b  " FOR /F "tokens=3" %%a in ('wmic bios get smbiosbiosversion') do SET biosver=%%a
 
 :: Close edge if running
 taskkill /F /IM MicrosoftEdge.exe
@@ -166,7 +166,7 @@ exit
 :: the tokens.
 
 :6475b68TTU
-FOR /F "tokens=1" %%a in ('^"\\CBRCFS\Staff_Share$\Client Services\Software\Scripts\afterimage\non_cte\wmicbios.bat^"') do SET biosver=%%a
+FOR /F "tokens=1" %%a in ('wmic bios get smbiosbiosversion') do SET biosver=%%a
 echo Your bios version is %biosver%. It should be F.69.
 if "%biosver%"== "F.69" echo Your machine BIOS (%biosver%) is already up to date. & pause & exit
 xcopy /E "\\CBRCFS\STAFF_SHARE$\Client Services\Software\Drivers\Machine Drivers\BIOS Updates\HP\Current\HP Probook 6475b\SP86984" C:\SWSetup\sp86984\
@@ -175,7 +175,7 @@ pause
 exit
 
 :6475b68RTU
-FOR /F "tokens=1" %%a in ('^"\\CBRCFS\Staff_Share$\Client Services\Software\Scripts\afterimage\non_cte\wmicbios.bat^"') do SET biosver=%%a
+FOR /F "tokens=1" %%a in ('wmic bios get smbiosbiosversion') do SET biosver=%%a
 echo Your bios version is %biosver%. It should be F.69.
 if "%biosver%"== "F.69" echo Your machine BIOS (%biosver%) is already up to date. & pause & exit
 xcopy /E "\\CBRCFS\STAFF_SHARE$\Client Services\Software\Drivers\Machine Drivers\BIOS Updates\HP\Current\HP Probook 6475b\SP86984" C:\SWSetup\sp86984\
