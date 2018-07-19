@@ -17,6 +17,7 @@ if "%modelnum%" == "EliteBook755 G4  " FOR /F "tokens=3" %%a in ('wmic bios get 
 if "%modelnum%" == "EliteDesk705 G2 MT  " FOR /F "tokens=3" %%a in ('wmic bios get smbiosbiosversion') do SET biosver=%%a
 if "%modelnum%" == "EliteDesk705 G3 MT  " FOR /F "tokens=3" %%a in ('wmic bios get smbiosbiosversion') do SET biosver=%%a
 if "%modelnum%" == "EliteDesk705 G3 SFF  " FOR /F "tokens=3" %%a in ('wmic bios get smbiosbiosversion') do SET biosver=%%a
+if "%modelnum%" == "Elitex2 1012 G1  " FOR /F "tokens=3" %%a in ('wmic bios get smbiosbiosversion') do SET biosver=%%a
 if "%modelnum%" == "ProBook6475b  " FOR /F "tokens=3" %%a in ('wmic bios get smbiosbiosversion') do SET biosver=%%a
 
 :: Close edge if running
@@ -42,15 +43,14 @@ echo Current school is %location%
 echo Install Certiport is %installcertiport%
 echo.
 
+if "%installcertiport%"=="no" goto wordsearch
 if "%installcertiport%"=="yes" (
-	if exist "C:\Users\Public\Desktop\Console 8.lnk" (
+  if exist "C:\Users\Public\Desktop\Console 8.lnk" (
 		goto wordsearch
-		) else if "%installcertiport%"=="no" (
-			goto wordsearch
-		)
-	)
-
-set /p config= Is this an autodesk machine? Y/N:
+    ) else (
+      set /p config= Is this an autodesk machine? Y/N: && goto wordsearch
+    )
+  )
 
 :: Experimenting with checking office activation
 :wordsearch
@@ -122,6 +122,7 @@ if "%modelnum%" == "EliteBook745 G3  " echo We found your model number! Press an
 if "%modelnum%" == "EliteBook745 G4  " echo We found your model number! Press any key to begin BIOS update. & goto 745g4
 if "%modelnum%" == "EliteBook755 G3  " echo We found your model number! Press any key to begin BIOS update. & goto 745g3
 if "%modelnum%" == "EliteBook755 G4  " echo We found your model number! Press any key to begin BIOS update. & goto 745g4
+if "%modelnum%" == "Elitex2 1012 G1  " echo We found your model number! Press any key to begin BIOS update. & goto elitex2
 if "%modelnum%" == "ProBook6475b  " (
     for /f "delims=: tokens=1*" %%A in ('systeminfo') do (
   for /f "tokens=*" %%S in ("%%B") do (
@@ -230,5 +231,13 @@ echo Your bios version is %biosver%. It should be v02.77.
 if "%biosver%"=="v02.77" echo Your machine BIOS is already up to date. & pause && exit
 xcopy /E "\\CBRCFS\STAFF_SHARE$\Client Services\Software\Drivers\Machine Drivers\BIOS Updates\HP\Current\HP Compaq Pro 6305\sp87071" C:\SWSetup\sp87071\
 C:\SWSetup\sp87071\HPQFlash\HpqFlash.exe
+pause
+exit
+
+:elitex2
+echo Your bios version is %biosver%. It should be 01.29.
+if "%biosver%"=="01.29" echo Your machine BIOS is already up to date. & pause && exit
+xcopy /E "\\CBRCFS\STAFF_SHARE$\Client Services\Software\Drivers\Machine Drivers\BIOS Updates\HP\Current\HP Elite x2 1012 G1\sp85132 (BIOS 1.29)" C:\SWSetup\sp85132\
+C:\SWSetup\sp85132\HPBIOSUPDREC.exe
 pause
 exit
