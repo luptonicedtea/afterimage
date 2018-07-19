@@ -1,43 +1,7 @@
 @echo off
 
-:: Grab the location, set as %location%. Only works for Middle and High School
-if "%computername:~0,3%" == "326" set location=laney
-if "%computername:~0,3%" == "327" set location=ashley
-if "%computername:~0,3%" == "340" set location=bear
-if "%computername:~0,3%" == "342" set location=hoggard
-if "%computername:~0,3%" == "352" set location=newhanover
-if "%computername:~0,3%" == "354" set location=jcroe
-if "%computername:~0,3%" == "355" set location=mosley
-if "%computername:~0,3%" == "394" set location=wec
-if "%computername:~0,3%" == "395" set location=seatech
-if "%computername:~0,3%" == "310" set location=murray
-if "%computername:~0,3%" == "325" set location=trask
-if "%computername:~0,3%" == "343" set location=hollyshelter
-if "%computername:~0,3%" == "350" set location=noble
-if "%computername:~0,3%" == "351" set location=myrtlegrove
-if "%computername:~0,3%" == "364" set location=rolandgrise
-if "%computername:~0,3%" == "392" set location=williston
-
-:: Check to see if Certiport is necessary
-if %location%==laney (
-	set installcertiport=yes
-	) else if %location%==ashley (
-	set installcertiport=yes
-	) else if %location%==bear (
-	set installcertiport=yes
-	) else if %location%==hoggard (
-	set installcertiport=yes
-	) else if %location%==newhanover (
-	set installcertiport=yes
-	) else if %location%==jcroe (
-	set installcertiport=yes
-	) else if %location%==mosley (
-	set installcertiport=yes
-	) else if %location%==wec (
-	set installcertiport=yes
-	) else if %location%==seatech (
-	set installcertiport=yes
-	) else (set installcertiport=no)
+::Add runtime to log
+echo %username%,%time%,%date% >> "\\CBRCFS\Staff_Share$\Client Services\Software\Scripts\afterimage\cte\run_log.csv"
 
 :: Grab the BIOS version and Model Number
 FOR /F "tokens=2" %%a in ('wmic bios get smbiosbiosversion') do SET biosver=%%a
@@ -60,9 +24,23 @@ taskkill /F /IM MicrosoftEdge.exe
 taskkill /F /IM MicrosoftEdgeCP.exe
 cls
 
-:: Determine Console8 Configuration
+:: Grab the location, set as %location%. Only works for High School
+set location=%computername:~0,3%
+set installcertiport=no
+FOR %%G IN ("326"
+            "327"
+            "340"
+            "342"
+            "352"
+            "354"
+            "355"
+            "394"
+            "395") DO (
+            IF /I "%location%"=="%%~G" set installcertiport=yes
+)
 echo Current school is %location%
 echo Install Certiport is %installcertiport%
+echo.
 
 if "%installcertiport%"=="yes" (
 	if exist "C:\Users\Public\Desktop\Console 8.lnk" (
